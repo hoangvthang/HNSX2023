@@ -1,11 +1,14 @@
 <template>
   <div class="row column header" id="app">
-  <h1 class="cover-heading">Tìm kiếm ảnh hưởng <i class="fa fa-search"></i></h1>
+  <h1 class="cover-heading">Tìm kiếm ảnh hưởng <i class="fab fa-user"></i></h1>
   <div class="medium-6 medium-offset-3 ctrl">
-    <form class="searchForm" @submit.prevent="submitSearch">
-      <input type="text" class="search" v-model="searchQuery" placeholder="Type here and press enter">
+      <form class="searchForm" @submit.prevent="submitSearch">
+        <input type="text" class="search" v-model="searchQuery" placeholder="Type here and press enter">
+      </form>
+      <div class="searchContainer">
+        <button class="voiceButton" @click="startSpeechRecognition"><i class="fa fa-microphone"></i></button>
+      </div>
       <span v-show="searchQuery" class="removeInput" @click="removeSearchQuery">+</span>
-    </form>
     <a class="raised-button ink" @click="submitSearch"><i class="fa fa-search"></i> Search</a>
     <!-- <a class="raised-button ink" href="http://en.wikipedia.org/wiki/Special:Random" target="_blank"><i class="fa fa-random"></i> Random Article</a> -->
   </div>
@@ -48,6 +51,17 @@ export default {
             }
         });
     },
+    startSpeechRecognition: function() {
+      this.searchQuery = '';
+      const recognition = new window.webkitSpeechRecognition;
+      recognition.lang = 'vi';
+
+      recognition.onresult = (event) => {
+        this.searchQuery  = event.results[0][0].transcript;
+      };
+
+      recognition.start();
+    }
   }
 }
 </script>
@@ -229,5 +243,19 @@ input[type="text"].with-floating-label:focus + label.floating-label, input[type=
   color: #00bcd4;
   font-size: 0.75rem;
   top: -56px;
+}
+.searchContainer {
+  position: relative;
+  align-items: center;
+}
+
+.voiceButton {
+  position: absolute;
+  margin-left: 25%;
+  transform: translateY(-500%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 </style>
